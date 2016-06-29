@@ -3,31 +3,34 @@ import numpy as np
 from datetime import timedelta
 
 
-df = pd.read_csv('data/churn.csv')
+def load_churn():
+    df = pd.read_csv('data/churn.csv')
 
 
-# Create Churn target column
-df.last_trip_date = pd.to_datetime(df.last_trip_date)
-last = max(df.last_trip_date) - timedelta(days=30)
-df['churn'] = np.where(df.last_trip_date >= last, 0, 1)
+    # Create Churn target column
+    df.last_trip_date = pd.to_datetime(df.last_trip_date)
+    last = max(df.last_trip_date) - timedelta(days=30)
+    df['churn'] = np.where(df.last_trip_date >= last, 0, 1)
 
-# Create 'Other' category for non-Android/non-iPhone
-df.phone = df.phone.fillna('Other')
+    # Create 'Other' category for non-Android/non-iPhone
+    df.phone = df.phone.fillna('Other')
 
-# Dummify Phone column
-phones = ['Android', 'Other', 'iPhone']
-df[phones] = pd.get_dummies(df['phone'])
-# Drop phone column
-df = df.drop('phone', axis=1)
+    # Dummify Phone column
+    phones = ['Android', 'Other', 'iPhone']
+    df[phones] = pd.get_dummies(df['phone'])
+    # Drop phone column
+    df = df.drop('phone', axis=1)
 
-# Convert signup_date to datetime
-df.signup_date = pd.to_datetime(df.signup_date)
+    # Convert signup_date to datetime
+    df.signup_date = pd.to_datetime(df.signup_date)
 
 
-# Dummify the city column and drop 'city'
-df[['Astapor', "King's Landing", 'Winterfell']] = pd.get_dummies(df['city'])
-df = df.drop(['city'], axis=1)
+    # Dummify the city column and drop 'city'
+    df[['Astapor', "King's Landing", 'Winterfell']] = pd.get_dummies(df['city'])
+    df = df.drop(['city'], axis=1)
 
-# Drop rows that have NaN values
-df = df[df['avg_rating_by_driver'].notnull()]
-df = df[df['avg_rating_of_driver'].notnull()]
+    # Drop rows that have NaN values
+    df = df[df['avg_rating_by_driver'].notnull()]
+    df = df[df['avg_rating_of_driver'].notnull()]
+
+    return df
