@@ -34,11 +34,8 @@ def load_churn():
     df = df[df['avg_rating_of_driver'].notnull()]
 
     # Convert timestamps from date times into ints (day of year)
-    f = lambda x: .timetuple()[-2]
+    f = lambda x: x.timetuple()[-2]
     df['last_trip_date'] = df['last_trip_date'].map(f)
     df['signup_date'] = df['signup_date'].map(f)
 
     return df
-
-def dt_to_doy(column):
-    return
